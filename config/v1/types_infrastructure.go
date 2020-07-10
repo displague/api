@@ -112,6 +112,9 @@ const (
 
 	// IBMCloudPlatformType represents IBM Cloud infrastructure.
 	IBMCloudPlatformType PlatformType = "IBMCloud"
+
+	// PacketPlatformType represents Packet infrastructure.
+	PacketPlatformType PlatformType = "Packet"
 )
 
 // IBMCloudProviderType is a specific supported IBM Cloud provider cluster type
@@ -172,6 +175,10 @@ type PlatformSpec struct {
 	// IBMCloud contains settings specific to the IBMCloud infrastructure provider.
 	// +optional
 	IBMCloud *IBMCloudPlatformSpec `json:"ibmcloud,omitempty"`
+
+	// Packet contains settings specific to the Packet infrastructure provider.
+	// +optional
+	Packet *PacketPlatformSpec `json:"packet,omitempty"`
 }
 
 // PlatformStatus holds the current status specific to the underlying infrastructure provider
@@ -183,9 +190,9 @@ type PlatformStatus struct {
 	// balancers, dynamic volume provisioning, machine creation and deletion, and
 	// other integrations are enabled. If None, no infrastructure automation is
 	// enabled. Allowed values are "AWS", "Azure", "BareMetal", "GCP", "Libvirt",
-	// "OpenStack", "VSphere", "oVirt", and "None". Individual components may not support
-	// all platforms, and must handle unrecognized platforms as None if they do
-	// not support that platform.
+	// "OpenStack", "VSphere", "oVirt", "Packet", and "None". Individual components
+	// may not support all platforms, and must handle unrecognized platforms as None
+	// if they do not support that platform.
 	//
 	// This value will be synced with to the `status.platform` and `status.platformStatus.type`.
 	// Currently this value cannot be changed once set.
@@ -222,6 +229,10 @@ type PlatformStatus struct {
 	// IBMCloud contains settings specific to the IBMCloud infrastructure provider.
 	// +optional
 	IBMCloud *IBMCloudPlatformStatus `json:"ibmcloud,omitempty"`
+
+	// Packet contains settings specific to the Packet infrastructure provider.
+	// +optional
+	Packet *PacketPlatformStatus `json:"packet,omitempty"`
 }
 
 // AWSServiceEndpoint store the configuration of a custom url to
@@ -436,6 +447,21 @@ type IBMCloudPlatformStatus struct {
 
 	// ProviderType indicates the type of cluster that was created
 	ProviderType IBMCloudProviderType `json:"providerType,omitempty"`
+}
+
+// PacketPlatformSpec holds the desired state of the Packet Platform
+// infrastructure provider. This only includes fields that can be modified in
+// the cluster.
+type PacketPlatformSpec struct{}
+
+// PacketPlatformStatus holds the current status of the Packet Platform
+// infrastructure provider.
+type PacketPlatformStatus struct {
+	// ProjectID is the Packet project to group resources created for the cluster.
+	ProjectID string `json:"projectID"`
+
+	// Facility is the Packet facility to use for resources created in the cluster.
+	Facility string `json:"facility"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
